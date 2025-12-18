@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1001,
+    "email": "customer@gmail.com",
+    "total_price": "120.00",
+    "billing_address": { "country_code": "US" },
+    "shipping_address": { "country_code": "US" }
+  },
+  {
+    "id": 1002,
+    "email": "hacker@tempmail.com",
+    "total_price": "45.00",
+    "billing_address": { "country_code": "US" },
+    "shipping_address": { "country_code": "US" }
+  },
+  {
+    "id": 1003,
+    "email": "rich@yahoo.com",
+    "total_price": "6000.00",
+    "billing_address": { "country_code": "CA" },
+    "shipping_address": { "country_code": "CA" }
+  },
+  {
+    "id": 1004,
+    "email": "mismatch@outlook.com",
+    "total_price": "200.00",
+    "billing_address": { "country_code": "US" },
+    "shipping_address": { "country_code": "FR" }
+  }
+]
