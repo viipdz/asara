@@ -1,0 +1,88 @@
+// قائمة الولايات الجزائرية الـ58
+export const ALGERIA_WILAYAS = [
+    'Adrar', 'Chlef', 'Laghouat', 'Oum El Bouaghi', 'Batna', 'Béjaïa', 'Biskra', 'Béchar',
+    'Blida', 'Bouira', 'Tamanrasset', 'Tébessa', 'Tlemcen', 'Tiaret', 'Tizi Ouzou',
+    'Alger', 'Djelfa', 'Jijel', 'Sétif', 'Saïda', 'Skikda', 'Sidi Bel Abbès',
+    'Annaba', 'Guelma', 'Constantine', 'Médéa', 'Mostaganem', 'M\'Sila', 'Mascara',
+    'Ouargla', 'Oran', 'El Bayadh', 'Illizi', 'Bordj Bou Arréridj', 'Boumerdès',
+    'El Tarf', 'Tindouf', 'Tissemsilt', 'El Oued', 'Khenchela', 'Souk Ahras',
+    'Tipaza', 'Mila', 'Aïn Defla', 'Naâma', 'Aïn Témouchent', 'Ghardaïa', 'Relizane',
+    'Timimoun', 'Bordj Badji Mokhtar', 'Ouled Djellal', 'Béni Abbès', 'In Salah',
+    'In Guezzam', 'Touggourt', 'Djanet', 'El M\'Ghair', 'El Meniaa'
+];
+
+export const ALGERIA_PHONE_PREFIXES = {
+    mobile: ['05', '06', '07'],
+    landline: ['021', '023', '024', '025', '026', '027', '029']
+};
+
+export const SUSPICIOUS_NAME_PATTERNS = [
+    'test', 'fake', 'admin', 'user', 'client', 'customer',
+    'aaa', 'bbb', 'xxx', '111', '222', '999',
+    'asdf', 'qwer', 'zxcv', 'hjkl'
+];
+
+export const FOREIGN_COUNTRIES = [
+    'france', 'paris', 'tunisia', 'tunis', 'morocco', 'maroc', 'rabat',
+    'egypt', 'cairo', 'libya', 'tripoli', 'spain', 'madrid', 'italy',
+    'usa', 'canada', 'uk', 'london', 'germany', 'dubai'
+];
+
+export function isValidAlgerianPhone(phone) {
+    if (!phone) return false;
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+    const algerianPattern = /^(\+213|0)(5|6|7)\d{8}$/;
+    return algerianPattern.test(cleaned);
+}
+
+export function isValidWilaya(wilaya) {
+    if (!wilaya) return false;
+    const normalizedWilaya = wilaya.trim();
+    return ALGERIA_WILAYAS.some(w =>
+        w.toLowerCase() === normalizedWilaya.toLowerCase()
+    );
+}
+
+export function checkNameQuality(name) {
+    if (!name || name.length < 3) {
+        return { valid: false, reason: 'الاسم قصير جداً' };
+    }
+
+    if (name.length > 100) {
+        return { valid: false, reason: 'الاسم طويل جداً' };
+    }
+
+    const lowerName = name.toLowerCase();
+    for (const pattern of SUSPICIOUS_NAME_PATTERNS) {
+        if (lowerName.includes(pattern)) {
+            return { valid: false, reason: `اسم مشبوه: يحتوي على "${pattern}"` };
+        }
+    }
+
+    const repeatedChars = /(.)\\1{4,}/;
+    if (repeatedChars.test(name)) {
+        return { valid: false, reason: 'اسم يحتوي على أحرف متكررة بشكل مشبوه' };
+    }
+
+    const digitCount = (name.match(/\d/g) || []).length;
+    if (digitCount > 3) {
+        return { valid: false, reason: 'الاسم يحتوي على أرقام كثيرة' };
+    }
+
+    return { valid: true };
+}
+
+export function checkInternationalShipping(address, wilaya) {
+    const fullText = `${address || ''} ${wilaya || ''}`.toLowerCase();
+
+    for (const country of FOREIGN_COUNTRIES) {
+        if (fullText.includes(country)) {
+            return {
+                suspicious: true,
+                reason: `العنوان يحتوي على اسم دولة: "${country}"`
+            };
+        }
+    }
+
+    return { suspicious: false };
+}
